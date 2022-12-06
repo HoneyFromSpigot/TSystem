@@ -4,6 +4,9 @@ import io.github.thewebcode.tsystem.TBungeeSystem;
 import io.github.thewebcode.tsystem.api.utils.ModuleFileManager;
 import io.github.thewebcode.tsystem.module.AbstractModule;
 
+import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -34,6 +37,24 @@ public class TAPI {
         return null;
     }
 
+    public void sendToServer(Object obj){
+        int defaultPort = 2223;
+        try {
+            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
+            serverSocketChannel.configureBlocking(true);
+            serverSocketChannel.socket().bind(new InetSocketAddress(defaultPort));
+            System.out.println("Server started on port " + defaultPort);
+            ObjectOutputStream oos = new ObjectOutputStream(serverSocketChannel.socket().accept().getOutputStream());
+            oos.writeObject(obj);
+            System.out.println("Object sent");
+            oos.close();
+            serverSocketChannel.close();
+            System.out.println("Server closed");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public ModuleFileManager getFileManager() {
         return fileManager;
     }
@@ -42,6 +63,7 @@ public class TAPI {
         get().registerModule(module);
     }
 
+    @Deprecated
     public static TAPI get() {
         return TBungeeSystem.getInstance().getApi();
     }

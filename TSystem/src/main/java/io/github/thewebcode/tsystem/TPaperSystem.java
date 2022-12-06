@@ -11,6 +11,7 @@ public class TPaperSystem extends JavaPlugin {
     public void onLoad() {
         instance = this;
         this.api = new TAPI();
+        System.out.println("Loaded!");
     }
 
     public TAPI getApi() {
