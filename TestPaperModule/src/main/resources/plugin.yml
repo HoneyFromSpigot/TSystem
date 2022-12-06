@@ -1,0 +1,6 @@
+name: TestPaperModule
+version: '${project.version}'
+main: io.github.thewebcode.testpapermodule.TestPaperModule
+api-version: 1.19
+authors: [ TheWebcode ]
+description: Test Module for Paper

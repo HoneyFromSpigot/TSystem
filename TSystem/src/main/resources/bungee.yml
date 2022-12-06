@@ -1,0 +1,4 @@
+name: TSystem
+version: '${project.version}'
+main: io.github.thewebcode.tsystem.TBungeeSystem
+description: T Server System for Bungeecord

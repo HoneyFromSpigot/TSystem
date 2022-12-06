@@ -1,0 +1,5 @@
+main: io.github.thewebcode.tsystem.TPaperSystem
+version: 1.0
+author: TheWebcode
+api-version: 1.19
+name: TSystem

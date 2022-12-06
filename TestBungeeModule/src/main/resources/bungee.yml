@@ -1,0 +1,5 @@
+name: TestBungeeModule
+version: '${project.version}'
+main: io.github.thewebcode.testbungeemodule.TestBungeeModule
+description: Test Bungee Module
+depends: [TSystem]
