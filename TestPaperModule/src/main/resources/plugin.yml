@@ -2,5 +2,8 @@ name: TestPaperModule
 version: '${project.version}'
 main: io.github.thewebcode.testpapermodule.TestPaperModule
 api-version: 1.19
+depend: [TSystem]
 authors: [ TheWebcode ]
 description: Test Module for Paper
+commands:
+  test:
