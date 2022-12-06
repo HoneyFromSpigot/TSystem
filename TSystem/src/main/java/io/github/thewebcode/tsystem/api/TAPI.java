@@ -3,6 +3,7 @@ package io.github.thewebcode.tsystem.api;
 import io.github.thewebcode.tsystem.TBungeeSystem;
 import io.github.thewebcode.tsystem.api.utils.ModuleFileManager;
 import io.github.thewebcode.tsystem.module.AbstractModule;
+import io.github.thewebcode.tsystem.server.IAction;
 
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
@@ -28,8 +29,10 @@ public class TAPI {
     }
 
     public AbstractModule getModule(String name) {
+        System.out.println("Run get Module");
         for (AbstractModule module : modules) {
             if (module.getName().equalsIgnoreCase(name)) {
+                System.out.println("Returning Module: "+ module.getModuleID());
                 return module;
             }
         }
@@ -43,13 +46,10 @@ public class TAPI {
             ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
             serverSocketChannel.configureBlocking(true);
             serverSocketChannel.socket().bind(new InetSocketAddress(defaultPort));
-            System.out.println("Server started on port " + defaultPort);
             ObjectOutputStream oos = new ObjectOutputStream(serverSocketChannel.socket().accept().getOutputStream());
             oos.writeObject(obj);
-            System.out.println("Object sent");
             oos.close();
             serverSocketChannel.close();
-            System.out.println("Server closed");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,10 @@
 package io.github.thewebcode.testpapermodule;
 
+import io.github.thewebcode.tsystem.TBungeeSystem;
 import io.github.thewebcode.tsystem.TPaperSystem;
+import io.github.thewebcode.tsystem.server.IAction;
+import io.github.thewebcode.tsystem.server.IGetAction;
+import io.github.thewebcode.tsystem.server.SourceType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,9 +23,8 @@ public final class TestPaperModule extends JavaPlugin implements CommandExecutor
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        System.out.println("Trying to send to server!");
-
-        TPaperSystem.getInstance().getApi().sendToServer("Hello from Paper!");
+        IAction action = new IAction("io.github.thewebcode.tsystem.TestClass", "getText", SourceType.NEW_INSTANCE);
+        TPaperSystem.getInstance().getApi().sendToServer(action);
         return true;
     }
 }
