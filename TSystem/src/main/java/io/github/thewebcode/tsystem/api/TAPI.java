@@ -4,14 +4,22 @@ import io.github.thewebcode.tsystem.TBungeeSystem;
 import io.github.thewebcode.tsystem.api.utils.ModuleFileManager;
 import io.github.thewebcode.tsystem.module.AbstractModule;
 import io.github.thewebcode.tsystem.server.IAction;
+import io.github.thewebcode.tsystem.server.reflections.MethodMap;
+import io.github.thewebcode.tsystem.server.reflections.ServiceClass;
+import io.github.thewebcode.tsystem.server.reflections.ServiceMethod;
+import org.reflections.Reflections;
 
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class TAPI {
+    private MethodMap methodMap = new MethodMap();
 
     private ArrayList<AbstractModule> modules;
     private ModuleFileManager fileManager;
@@ -36,6 +44,16 @@ public class TAPI {
                 return module;
             }
         }
+        
+        return null;
+    }
+
+    public AbstractModule getModuleByID(String id) {
+        for (AbstractModule module : modules) {
+            if (module.getModuleID().equalsIgnoreCase(id)) {
+                return module;
+            }
+        }
 
         return null;
     }
@@ -53,6 +71,33 @@ public class TAPI {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static MethodMap map(AbstractModule module, Class<?> clazz) {
+        if (!clazz.isAnnotationPresent(ServiceClass.class)) {
+            System.out.println("Class is not annotated with ServiceClass");
+            return null;
+        }
+
+        Method[] methods = clazz.getMethods();
+
+        Set<Method> methodsAnnotatedWith = new HashSet<>();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(ServiceMethod.class)) {
+                methodsAnnotatedWith.add(method);
+            }
+        }
+        MethodMap map = new MethodMap();
+
+        methodsAnnotatedWith.forEach(method -> {
+            map.add(method, module.getModuleID() + "-" + method.getAnnotation(ServiceMethod.class).serviceID());
+        });
+
+        return map;
+    }
+
+    public void register(MethodMap map){
+        this.methodMap.add(map);
     }
 
     public ModuleFileManager getFileManager() {

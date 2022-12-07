@@ -1,10 +1,9 @@
-package io.github.thewebcode.tsystem.server;
+package io.github.thewebcode.testpapermodule;
 
-import io.github.thewebcode.tsystem.TBungeeSystem;
 import io.github.thewebcode.tsystem.module.AbstractModule;
+import io.github.thewebcode.tsystem.server.IGetableObject;
 
 import java.io.ObjectInputStream;
-import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 

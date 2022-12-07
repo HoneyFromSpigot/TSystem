@@ -1,10 +1,11 @@
 package io.github.thewebcode.testpapermodule;
 
-import io.github.thewebcode.tsystem.TBungeeSystem;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import io.github.thewebcode.testpapermodule.test.TestClass;
 import io.github.thewebcode.tsystem.TPaperSystem;
-import io.github.thewebcode.tsystem.server.IAction;
-import io.github.thewebcode.tsystem.server.IGetAction;
-import io.github.thewebcode.tsystem.server.SourceType;
+import io.github.thewebcode.tsystem.api.TAPI;
+import io.github.thewebcode.tsystem.server.reflections.MethodMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,14 +18,24 @@ public final class TestPaperModule extends JavaPlugin implements CommandExecutor
     @Override
     public void onEnable() {
         instance = this;
-        TPaperSystem.getInstance().getApi().registerModule(new Module());
+        Module m = new Module();
+        TPaperSystem.getInstance().getApi().registerModule(m);
         getCommand("test").setExecutor(this);
+
+        MethodMap map = TAPI.map(m, TestClass.class);
+        TPaperSystem.getInstance().getApi().register(map);
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "tsystem:main");
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "tsystem:main");
+
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        IAction action = new IAction("io.github.thewebcode.tsystem.TestClass", "getText", SourceType.NEW_INSTANCE);
-        TPaperSystem.getInstance().getApi().sendToServer(action);
+        ByteArrayDataOutput output = ByteStreams.newDataOutput();
+
+        output.writeUTF("test");
+
+        sender.getServer().sendPluginMessage(this, "tsystem:main", output.toByteArray());
         return true;
     }
 }

@@ -1,8 +1,5 @@
 package io.github.thewebcode.tsystem;
 
-import io.github.thewebcode.tsystem.TBungeeSystem;
-
-import java.util.logging.Logger;
 
 public class TestClass {
     public String getText() {

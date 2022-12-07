@@ -1,5 +1,6 @@
 package io.github.thewebcode.testpapermodule;
 
+import io.github.thewebcode.tsystem.api.TAPI;
 import io.github.thewebcode.tsystem.module.AbstractModule;
 
 public class Module extends AbstractModule {

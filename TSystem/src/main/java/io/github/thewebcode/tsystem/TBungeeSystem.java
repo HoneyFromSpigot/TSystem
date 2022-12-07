@@ -1,28 +1,27 @@
 package io.github.thewebcode.tsystem;
 
 import io.github.thewebcode.tsystem.api.TAPI;
-import io.github.thewebcode.tsystem.server.LocalServerManager;
+import io.github.thewebcode.tsystem.server.pluginmessaging.BungeeMessageListener;
+import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.util.concurrent.TimeUnit;
 
-public final class TBungeeSystem extends Plugin {
+public final class TBungeeSystem extends Plugin implements Listener {
     private static TBungeeSystem instance;
     private TAPI api;
-    private LocalServerManager localServerManager;
 
     @Override
     public void onLoad() {
         instance = this;
         this.api = new TAPI();
-        this.localServerManager = new LocalServerManager();
     }
 
     @Override
     public void onEnable() {
-        this.getProxy().getScheduler().schedule(this, () -> {
-            localServerManager.receive();
-        }, 5, 1, TimeUnit.SECONDS);
+        getProxy().registerChannel("tsystem:main");
+
+        getProxy().getPluginManager().registerListener(this, new BungeeMessageListener());
     }
 
     public TAPI getApi() {
