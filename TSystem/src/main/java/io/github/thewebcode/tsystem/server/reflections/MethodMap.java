@@ -1,5 +1,7 @@
 package io.github.thewebcode.tsystem.server.reflections;
 
+import io.github.thewebcode.tsystem.api.TAPI;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -27,22 +29,28 @@ public class MethodMap implements Serializable {
         return methodServices;
     }
 
-    /*
-    public void run(String serviceID, Object source) {
-        if(!methodServices.containsKey(serviceID)) return;
+    public void run(String serviceID) {
+        if(!methodServices.containsKey(serviceID)) {
+            System.out.println("Service not found: " + serviceID);
+            return;
+        }
 
         try {
-            methodServices.get(serviceID).invoke(source);
+            System.out.println("Running service: " + serviceID);
+            Method method = methodServices.get(serviceID);
+            Class<?> declaringClass = method.getDeclaringClass();
+
+            Object obj = TAPI.get().getSourceObject(declaringClass);
+
+            if(obj == null) obj = declaringClass.newInstance();
+
+            method.invoke(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-     */
-
-    public void run() {
-        methodServices.values().forEach(value -> {
-            System.out.println("Method Name: " + value.getName());
-        });
+    public boolean containsService(String serviceID) {
+        return methodServices.containsKey(serviceID);
     }
 }

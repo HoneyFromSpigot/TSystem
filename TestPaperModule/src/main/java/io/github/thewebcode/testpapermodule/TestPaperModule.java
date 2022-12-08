@@ -21,20 +21,15 @@ public final class TestPaperModule extends JavaPlugin implements CommandExecutor
         Module m = new Module();
         TPaperSystem.getInstance().getApi().registerModule(m);
         getCommand("test").setExecutor(this);
-
+        getServer().getMessenger().registerOutgoingPluginChannel(this, "tsystem:main");
         MethodMap map = TAPI.map(m, TestClass.class);
-        TPaperSystem.getInstance().getApi().register(map);
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "tsystem:main");
-        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "tsystem:main");
-
+        TAPI.get().register(map);
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ByteArrayDataOutput output = ByteStreams.newDataOutput();
-
-        output.writeUTF("test");
-
+        output.writeUTF("hello");
         sender.getServer().sendPluginMessage(this, "tsystem:main", output.toByteArray());
         return true;
     }

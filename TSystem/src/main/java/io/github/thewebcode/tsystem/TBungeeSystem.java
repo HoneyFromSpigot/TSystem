@@ -14,13 +14,12 @@ public final class TBungeeSystem extends Plugin implements Listener {
     @Override
     public void onLoad() {
         instance = this;
-        this.api = new TAPI();
+        this.api = new TAPI(false);
     }
 
     @Override
     public void onEnable() {
         getProxy().registerChannel("tsystem:main");
-
         getProxy().getPluginManager().registerListener(this, new BungeeMessageListener());
     }
 

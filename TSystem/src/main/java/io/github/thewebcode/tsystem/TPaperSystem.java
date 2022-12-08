@@ -12,12 +12,12 @@ public class TPaperSystem extends JavaPlugin {
     @Override
     public void onLoad() {
         instance = this;
-        this.api = new TAPI();
+        this.api = new TAPI(true);
     }
 
     @Override
     public void onEnable() {
-        System.out.println("Registering channel");
+        getServer().getMessenger().registerIncomingPluginChannel(this, "tsystem:main", new MessageListener());
     }
 
     public TAPI getApi() {
