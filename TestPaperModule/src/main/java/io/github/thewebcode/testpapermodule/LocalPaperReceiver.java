@@ -8,25 +8,24 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 
 public class LocalPaperReceiver {
-    private IGetableObject lastObject;
     public void receive() {
-        try {
+        try (SocketChannel sChannel = SocketChannel.open()) {
             while (true) {
-                SocketChannel sChannel = SocketChannel.open();
                 sChannel.configureBlocking(true);
 
                 if (sChannel.connect(new InetSocketAddress("localhost", 2223))) {
-                    ObjectInputStream ois = new ObjectInputStream(sChannel.socket().getInputStream());
-                    Object o = ois.readObject();
+                    ObjectInputStream objectInputStream = new ObjectInputStream(sChannel.socket().getInputStream());
+                    Object object = objectInputStream.readObject();
 
-                    if(o instanceof IGetableObject) {
-                        lastObject = (IGetableObject) o;
-                        AbstractModule m = (AbstractModule) lastObject.getObject();
-                        System.out.println("Model ID:" + m.getModuleID());
+                    if(object instanceof IGetableObject) {
+                        IGetableObject lastObject = (IGetableObject) object;
+                        AbstractModule abstractModule = (AbstractModule) lastObject.getObject();
+                        System.out.println("Model ID:" + abstractModule.getModuleID());
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
