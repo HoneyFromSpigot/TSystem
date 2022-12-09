@@ -1,31 +1,59 @@
 package io.github.thewebcode.tsystem.api;
 
 import io.github.thewebcode.tsystem.TBungeeSystem;
-import io.github.thewebcode.tsystem.api.utils.ModuleFileManager;
+import io.github.thewebcode.tsystem.TPaperSystem;
 import io.github.thewebcode.tsystem.module.AbstractModule;
-import io.github.thewebcode.tsystem.server.IAction;
+import io.github.thewebcode.tsystem.server.ServerRequest;
+import io.github.thewebcode.tsystem.server.ServerResponse;
 
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class TAPI {
+    private static boolean spigot;
+    private HashMap<Class<?>, Object> sourceObjectMap = new HashMap<>();
 
     private ArrayList<AbstractModule> modules;
-    private ModuleFileManager fileManager;
 
-    public TAPI() {
+    public TAPI(boolean spigot) {
+        TAPI.spigot = spigot;
         this.modules = new ArrayList<>();
-        this.fileManager = new ModuleFileManager();
-
     }
 
     public void registerModule(AbstractModule module) {
         modules.add(module);
-        fileManager.getConfigFile(module);
         module.onEnable();
+    }
+
+    public void unregisterModule(AbstractModule module) {
+        modules.remove(module);
+        module.onDisable();
+    }
+
+    public void sendRequest(ServerRequest request, int port) {
+        try {
+            Socket socket = new Socket("localhost", port);
+
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+            oos.writeObject(request);
+            oos.close();
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerSourceObject(Object obj){
+        sourceObjectMap.put(obj.getClass(), obj);
+    }
+
+    public Object getSourceObject(Class<?> clazz){
+        return sourceObjectMap.get(clazz);
     }
 
     public AbstractModule getModule(String name) {
@@ -40,31 +68,26 @@ public class TAPI {
         return null;
     }
 
-    public void sendToServer(Object obj){
-        int defaultPort = 2223;
-        try {
-            ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-            serverSocketChannel.configureBlocking(true);
-            serverSocketChannel.socket().bind(new InetSocketAddress(defaultPort));
-            ObjectOutputStream oos = new ObjectOutputStream(serverSocketChannel.socket().accept().getOutputStream());
-            oos.writeObject(obj);
-            oos.close();
-            serverSocketChannel.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    public ModuleFileManager getFileManager() {
-        return fileManager;
+
+    public AbstractModule getModuleByID(String id) {
+        for (AbstractModule module : modules) {
+            if (module.getModuleID().equalsIgnoreCase(id)) {
+                return module;
+            }
+        }
+
+        return null;
     }
 
     public static void register(AbstractModule module) {
         get().registerModule(module);
     }
 
-    @Deprecated
     public static TAPI get() {
+        if(spigot){
+            return TPaperSystem.getInstance().getApi();
+        }
         return TBungeeSystem.getInstance().getApi();
     }
 
