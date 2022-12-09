@@ -1,11 +1,13 @@
-package io.github.thewebcode.tsystem.server.reflections;
+package io.github.thewebcode.tsystem.server;
+
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+@Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface ServiceClass {
+public @interface ServiceMethod {
+    String serviceID();
 }
