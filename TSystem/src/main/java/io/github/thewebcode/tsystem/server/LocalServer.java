@@ -3,18 +3,18 @@ package io.github.thewebcode.tsystem.server;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LocalServer extends Thread{
-    private ServerSocketChannel serverSocketChannel;
     private HashMap<String, Object> objects;
     private HashMap<String, Method> methods;
+    private ServerResponse response = null;
+    private ServerSocket serverSocket;
 
     private int port;
 
@@ -59,29 +59,44 @@ public class LocalServer extends Thread{
         }
     }
 
+    public void stopServer() {
+        try {
+            serverSocket.close();
+            this.interrupt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void start() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                receive();
-            }
-        }, 50, 500);
+        try {
+            this.serverSocket = new ServerSocket(port);
+            Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    receive();
+                }
+            }, 0, 1);
 
-        super.start();
+            super.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void receive() {
         try{
-                SocketChannel socketChannel = SocketChannel.open();
-                socketChannel.configureBlocking(true);
 
-                if(socketChannel.connect(new InetSocketAddress("localhost", port))) {
-                    ObjectInputStream stream = new ObjectInputStream(socketChannel.socket().getInputStream());
-                    Object object = stream.readObject();
-                    handleReceivedObject(object);
-                }
+            while(true){
+                Socket client = serverSocket.accept();
+                ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
+                Object object = ois.readObject();
+
+                handleReceivedObject(object);
+
+            }
         } catch (Exception ignore) {
         }
     }
@@ -107,6 +122,10 @@ public class LocalServer extends Thread{
                     sendResponse(response, request.getReturningPort());
                 }
             }
+
+            if(object instanceof ServerResponse){
+                this.response = (ServerResponse) object;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -114,16 +133,17 @@ public class LocalServer extends Thread{
 
     private void sendResponse(ServerResponse response, int port) {
         try {
-            ServerSocketChannel channel = ServerSocketChannel.open();
-            channel.configureBlocking(true);
-            channel.socket().bind(new InetSocketAddress(port));
+            Socket socket = new Socket("localhost", port);
 
-            ObjectOutputStream oos = new ObjectOutputStream(channel.accept().socket().getOutputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(response);
-            oos.close();
-            channel.close();
+            oos.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ServerResponse getResponse() {
+        return response;
     }
 }

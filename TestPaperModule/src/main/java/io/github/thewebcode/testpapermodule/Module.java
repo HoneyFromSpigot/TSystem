@@ -5,15 +5,25 @@ import io.github.thewebcode.tsystem.module.AbstractModule;
 import io.github.thewebcode.tsystem.server.LocalServer;
 
 public class Module extends AbstractModule {
+    private LocalServer localServer;
     public Module() {
         super("testpapermodule", "1.0.0", "TestPaperModule", "TheWebcode");
 
         PaperFileManager fileManager = new PaperFileManager(this);
         int port = fileManager.getConfiguration().getInt("localserver.port");
-        LocalServer localServer = new LocalServer(port);
+        this.localServer = new LocalServer(port);
         localServer.start();
         localServer.register("io.github.thewebcode.testpapermodule.TestClass");
     }
 
+    @Override
+    public void onDisable() {
+        System.out.println("Closing Server Socket...");
+        localServer.stopServer();
+        super.onDisable();
+    }
 
+    public LocalServer getLocalServer() {
+        return localServer;
+    }
 }

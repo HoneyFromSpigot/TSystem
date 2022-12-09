@@ -1,6 +1,7 @@
 package io.github.thewebcode.testbungeemodule;
 
 import io.github.thewebcode.tsystem.module.AbstractModule;
+import io.github.thewebcode.tsystem.server.LocalServer;
 
 public class Module extends AbstractModule {
     public Module() {
@@ -9,7 +10,6 @@ public class Module extends AbstractModule {
 
     @Override
     public void onEnable() {
-        instance = this;
         super.onEnable();
     }
 }

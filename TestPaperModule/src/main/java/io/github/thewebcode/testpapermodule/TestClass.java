@@ -4,7 +4,7 @@ import io.github.thewebcode.tsystem.server.ServiceMethod;
 
 public class TestClass {
     @ServiceMethod(serviceID = "service-123")
-    public void sayHello(){
-        System.out.println("Hello World!");
+    public String getHello(){
+        return "Hello World!";
     }
 }

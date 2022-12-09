@@ -8,6 +8,7 @@ import io.github.thewebcode.tsystem.server.ServerResponse;
 
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,16 +30,19 @@ public class TAPI {
         module.onEnable();
     }
 
+    public void unregisterModule(AbstractModule module) {
+        modules.remove(module);
+        module.onDisable();
+    }
+
     public void sendRequest(ServerRequest request, int port) {
         try {
-            ServerSocketChannel channel = ServerSocketChannel.open();
-            channel.configureBlocking(true);
-            channel.socket().bind(new InetSocketAddress(port));
+            Socket socket = new Socket("localhost", port);
 
-            ObjectOutputStream oos = new ObjectOutputStream(channel.accept().socket().getOutputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
             oos.writeObject(request);
             oos.close();
-            channel.close();
+            socket.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
