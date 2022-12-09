@@ -28,9 +28,9 @@ public final class TestPaperModule extends JavaPlugin implements CommandExecutor
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        ServerRequest request = new ServerRequest("service-123");
+        ServerRequest request = new ServerRequest("service-1234");
         request.setReturningPort(2222);
-        TAPI.get().sendRequest(request, 2222);
+        TAPI.get().sendRequest(request, 2223);
 
         new BukkitRunnable(){
             @Override
