@@ -22,7 +22,7 @@ public abstract class AbstractModule {
     public void onEnable() {
         Logger logger = TAPI.getLogger();
 
-        String message = "§8---------------------------------------------" + "\n" +
+        String message = "\n§8---------------------------------------------" + "\n" +
                 "§aModule §8» §7" + name + "§8(§7" + moduleID + "§8)" + "\n" +
                 "§aVersion §8» §7" + version + "\n" +
                 "§aAuthor §8» §7" + author + "\n" +
@@ -32,7 +32,7 @@ public abstract class AbstractModule {
     }
 
     public void onDisable() {
-        String message = "§8---------------------------------------------" + "\n" +
+        String message = "\n§8---------------------------------------------" + "\n" +
                 "§cModule §8» §7" + name + "§8(§7" + moduleID + "§8)" + "\n" +
                 "§cVersion §8» §7" + version + "\n" +
                 "§cAuthor §8» §7" + author + "\n" +
