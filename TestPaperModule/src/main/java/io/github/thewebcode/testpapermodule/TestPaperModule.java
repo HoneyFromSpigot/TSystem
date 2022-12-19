@@ -3,12 +3,19 @@ package io.github.thewebcode.testpapermodule;
 import io.github.thewebcode.tsystem.api.TAPI;
 import io.github.thewebcode.tsystem.server.ServerRequest;
 import io.github.thewebcode.tsystem.server.ServerResponse;
+import net.kyori.adventure.text.Component;
+import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 
 public final class TestPaperModule extends JavaPlugin implements CommandExecutor {
@@ -28,20 +35,6 @@ public final class TestPaperModule extends JavaPlugin implements CommandExecutor
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        ServerRequest request = new ServerRequest("service-1234");
-        request.setReturningPort(2222);
-        TAPI.get().sendRequest(request, 2223);
-
-        new BukkitRunnable(){
-            @Override
-            public void run() {
-                ServerResponse response = module.getLocalServer().getResponse();
-                if(response != null){
-                    String text = (String) response.getObject();
-                    System.out.println("Text from TestClass is:" + text);
-                }
-            }
-        }.runTaskLater(this, 1);
         return true;
     }
 }
