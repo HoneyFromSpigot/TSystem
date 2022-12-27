@@ -1,5 +1,6 @@
 {
   "author": "TheWebcode",
   "description": "This is a simple Module",
-    "name": "simplemodule",
+  "name": "simplemodule",
+  "file": "module.jar"
 }
