@@ -1,11 +1,15 @@
 package io.github.thewebcode.tsystem;
 
 import io.github.thewebcode.tsystem.api.TAPI;
+import io.github.thewebcode.tsystem.event.Eventlistener;
+import io.github.thewebcode.tsystem.menu.InventoryService;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class TPaperSystem extends JavaPlugin {
     private static TPaperSystem instance;
     private TAPI api;
+    private InventoryService inventoryService;
 
     @Override
     public void onLoad() {
@@ -15,10 +19,16 @@ public class TPaperSystem extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.inventoryService = new InventoryService();
+        Bukkit.getPluginManager().registerEvents(new Eventlistener(), this);
     }
 
     public TAPI getApi() {
         return api;
+    }
+
+    public InventoryService getInventoryService() {
+        return inventoryService;
     }
 
     public static TPaperSystem getInstance() {
